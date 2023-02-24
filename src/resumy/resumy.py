@@ -389,8 +389,8 @@ def main() -> int:
 
     args = parser.parse_args()
 
-    # force a cast to int to make mypy happy
-    return cast(int, args.cmd(args))
+    # # force a cast to int to make mypy happy
+    # return cast(int, args.cmd(args))
 
 
 if __name__ == '__main__':
