@@ -20,6 +20,7 @@ DEFAULT_SCHEMAS_DIR = 'schemas'
 DEFAULT_SCHEMA = 'jsonresume.yaml'
 DEFAULT_THEMES_DIR = 'themes'
 DEFAULT_THEME = 'prairie'
+DEFAULT_WEB_OUTPUT_DIR = 'output'
 
 # Type aliases
 Yaml = Dict[str, Any]
@@ -80,7 +81,26 @@ def create_resume(config: Yaml,
     doc.metadata = metadata
     logger.info(f'export to {output_file}')
     doc.write_pdf(output_file)
-
+    
+    # 5. Create SPA
+    if os.path.exists(DEFAULT_WEB_OUTPUT_DIR):
+        shutil.rmtree(DEFAULT_WEB_OUTPUT_DIR)
+    os.mkdir(DEFAULT_WEB_OUTPUT_DIR)
+    # copy fonts dir #
+    fontsDir = os.listdir("resumy/src/resumy/themes/prairie/fonts")
+    shutil.copytree(theme_path + "/fonts",DEFAULT_WEB_OUTPUT_DIR + "/fonts")
+    shutil.copy(output_file,DEFAULT_WEB_OUTPUT_DIR + "/" + output_file)
+    # start building the css and html #
+    cssFile = open(DEFAULT_WEB_OUTPUT_DIR + "/resume.css","w")
+    for css in css_list:
+        print(css)
+        with open(css) as infile:
+            cssFile.write(infile.read())
+    htmlFile = open(DEFAULT_WEB_OUTPUT_DIR + "/resume.html","w")
+    htmlFile.write('<link rel="stylesheet" href="resume.css">')
+    htmlFile.write('')
+    htmlFile.write(html_resume)
+    
 
 def normalize_args(args: argparse.Namespace, config: Yaml) -> argparse.Namespace:
     now = datetime.now().strftime(DATE_FORMAT)
