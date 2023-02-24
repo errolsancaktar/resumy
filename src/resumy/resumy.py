@@ -87,7 +87,7 @@ def create_resume(config: Yaml,
         shutil.rmtree(DEFAULT_WEB_OUTPUT_DIR)
     os.mkdir(DEFAULT_WEB_OUTPUT_DIR)
     # copy fonts dir #
-    fontsDir = os.listdir("resumy/src/resumy/themes/prairie/fonts")
+    fontsDir = os.listdir("themes/prairie/fonts")
     shutil.copytree(theme_path + "/fonts",DEFAULT_WEB_OUTPUT_DIR + "/fonts")
     shutil.copy(output_file,DEFAULT_WEB_OUTPUT_DIR + "/" + output_file)
     # start building the css and html #
