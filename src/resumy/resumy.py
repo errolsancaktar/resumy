@@ -27,7 +27,7 @@ Yaml = Dict[str, Any]
 
 # Setup logger
 logger = logging.getLogger('resumy')
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 
 def load_yaml(config_path: str) -> Yaml:
@@ -389,8 +389,9 @@ def main() -> int:
 
     args = parser.parse_args()
 
-    # # force a cast to int to make mypy happy
+    # force a cast to int to make mypy happy
     # return cast(int, args.cmd(args))
+    return args.cmd(args)
 
 
 if __name__ == '__main__':
