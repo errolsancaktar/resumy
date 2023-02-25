@@ -21,7 +21,7 @@ DEFAULT_SCHEMAS_DIR = 'schemas'
 DEFAULT_SCHEMA = 'jsonresume.yaml'
 DEFAULT_THEMES_DIR = 'themes'
 DEFAULT_THEME = 'prairie'
-DEFAULT_WEB_OUTPUT_DIR = 'output'
+DEFAULT_WEB_OUTPUT_DIR = 'output/'
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 print(cur_dir)
 
@@ -56,6 +56,7 @@ def create_resume(config: Yaml,
                   metadata: DocumentMetadata,args: argparse.Namespace) -> None:
     ## Define Web Output Dir if Needed
     web_dir = args.folder + "/" + args.web
+    print(web_dir)
     # 1. Retrieve theme
     env = jinja2.Environment(
         loader=jinja2.FileSystemLoader('/'),
@@ -64,7 +65,6 @@ def create_resume(config: Yaml,
         template = env.get_template(f'{theme_path}/theme.html')
     except jinja2.exceptions.TemplateNotFound as err:
         raise IOError(f"No such file or directory: '{err}'")
-
     # 2. Create a html from both the theme and the config file
     html_resume = template.render(config, strptime=datetime.strptime, resume_name=args.output, today=date.today())
 
@@ -88,14 +88,12 @@ def create_resume(config: Yaml,
         logger.info(f'export to {output_file}')
         doc.write_pdf(output_file)
     else:
-        logger.info('buildweb flag')
-        doc.write_pdf(web_dir + output_file)
-        print(web_dir + output_file)
-    
-    # 5. Create SPA
-    if(args.buildweb == True):
         if not os.path.exists(web_dir):
             os.mkdir(web_dir)
+        logger.info('buildweb flag')
+        doc.write_pdf(web_dir + output_file)
+
+    # 5. Create SPA
         # copy fonts dir #
         shutil.copytree(theme_path + "/fonts",web_dir + "/fonts",dirs_exist_ok=True)
         shutil.copy(theme_path + "/download.jpg",web_dir + "/")

@@ -43,7 +43,7 @@
     {% endif %}
     {% endfor %}
     {% if basics.url %}
-    <li><span class="icon icon-link"></span> <a href="{{ basics.url }}">{{ basics.url }}</a></li>
+    <li><span class="icon icon-link"></span> <a href="{{ basics.url }}">{{ basics.urlname }}</a></li>
     {% endif %}
     {% if basics.location %}
     <li><span class="icon icon-location-pin"></span>{{ basics.location.city }}{% if basics.location.countryCode %} ({{ basics.location.countryCode }}){% endif %}</li>
