@@ -99,6 +99,7 @@ def create_resume(config: Yaml,
         # copy fonts dir #
         shutil.copytree(theme_path + "/fonts",web_dir + "/fonts",dirs_exist_ok=True)
         shutil.copy(theme_path + "/download.jpg",web_dir + "/")
+        shutil.copy(theme_path + "/print.css",web_dir + "/")
         # start building the css and html #
         cssFile = open(web_dir + "/resume.css","w")
         for css in css_list:
@@ -107,7 +108,7 @@ def create_resume(config: Yaml,
                 cssFile.write(infile.read())
         htmlFile = open(web_dir + "/index.html","w")
         htmlFile.write('<link rel="stylesheet" href="resume.css">')
-        htmlFile.write('<link rel="stylesheet" href="print.css">')
+        htmlFile.write('<link rel="stylesheet" href="print.css" media="print" >')
         htmlFile.write('')
         htmlFile.write(html_resume)
     
