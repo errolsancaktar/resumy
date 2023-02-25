@@ -54,7 +54,8 @@ def create_resume(config: Yaml,
                   output_file: str,
                   theme_path: str,
                   metadata: DocumentMetadata,args: argparse.Namespace) -> None:
-
+    ## Define Web Output Dir if Needed
+    web_dir = args.folder + "/" + args.web
     # 1. Retrieve theme
     env = jinja2.Environment(
         loader=jinja2.FileSystemLoader('/'),
@@ -92,7 +93,6 @@ def create_resume(config: Yaml,
     
     # 5. Create SPA
     if(args.buildweb == True):
-        web_dir = args.folder + "/" + args.web
         if os.path.exists(web_dir):
             shutil.rmtree(web_dir)
         os.mkdir(web_dir)
