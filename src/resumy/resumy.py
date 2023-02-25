@@ -86,6 +86,9 @@ def create_resume(config: Yaml,
     if(args.buildweb == False):
         logger.info(f'export to {output_file}')
         doc.write_pdf(output_file)
+    else:
+        logger.info('buildweb flag')
+        doc.write_pdf(web_dir + "/" + output_file)
     
     # 5. Create SPA
     if(args.buildweb == True):
@@ -96,7 +99,7 @@ def create_resume(config: Yaml,
         # copy fonts dir #
         # fontsDir = os.listdir("resumy/src/resumy/themes/prairie/fonts")
         shutil.copytree(theme_path + "/fonts",web_dir + "/fonts")
-        shutil.copy(output_file,web_dir + "/" + output_file)
+        # shutil.copy(output_file,web_dir + "/" + output_file)
         # start building the css and html #
         cssFile = open(web_dir + "/resume.css","w")
         for css in css_list:
