@@ -89,16 +89,15 @@ def create_resume(config: Yaml,
         doc.write_pdf(output_file)
     else:
         logger.info('buildweb flag')
-        doc.write_pdf(web_dir + "/" + output_file)
+        doc.write_pdf(web_dir + output_file)
+        print(web_dir + output_file)
     
     # 5. Create SPA
     if(args.buildweb == True):
-        if os.path.exists(web_dir):
-            shutil.rmtree(web_dir)
-        os.mkdir(web_dir)
+        if not os.path.exists(web_dir):
+            os.mkdir(web_dir)
         # copy fonts dir #
-        # fontsDir = os.listdir("resumy/src/resumy/themes/prairie/fonts")
-        shutil.copytree(theme_path + "/fonts",web_dir + "/fonts")
+        shutil.copytree(theme_path + "/fonts",web_dir + "/fonts",dirs_exist_ok=True)
         # shutil.copy(output_file,web_dir + "/" + output_file)
         # start building the css and html #
         cssFile = open(web_dir + "/resume.css","w")
@@ -249,7 +248,6 @@ def cmd_build(args: argparse.Namespace) -> int:
     if args.theme[0] != '/':
         # cur_dir = os.path.dirname(os.path.abspath(__file__))
         theme_path = os.path.abspath(os.path.join(cur_dir,DEFAULT_THEMES_DIR, args.theme))
-        print("Theme " + theme_path)
 
     metadata = DocumentMetadata(
         title=args.title,
