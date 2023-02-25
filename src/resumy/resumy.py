@@ -3,7 +3,7 @@ import logging
 import os
 import shutil
 import sys
-from datetime import datetime
+from datetime import datetime, date
 from typing import Any, Dict, cast
 
 import jinja2
@@ -66,7 +66,7 @@ def create_resume(config: Yaml,
         raise IOError(f"No such file or directory: '{err}'")
 
     # 2. Create a html from both the theme and the config file
-    html_resume = template.render(config, strptime=datetime.strptime)
+    html_resume = template.render(config, strptime=datetime.strptime, resume_name=args.output, today=date.today())
 
     # 3. Add css automatically
     css_list = []
@@ -139,7 +139,7 @@ def get_month_from(date: Yaml) -> str:
     return '01'
 
 
-def from_resumy_to_jsonschema(config: Yaml) -> Yaml:  # noqa: C901
+def from_resumy_to_jsonschema(config: Yaml, args: argparse.Namespace) -> Yaml:  # noqa: C901
     profile = config['profile']
     new_config: Yaml = {
         'meta': {

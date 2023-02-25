@@ -110,3 +110,29 @@ ul.work-list > li {
     top:0;
     right:0;
    }
+
+#download {
+    position: absolute;
+    float: right;
+    top: 20px;
+    right: 20px;
+}
+
+.download_button {
+    width: 100px;
+
+}
+
+@media print {
+    .noprint {
+       visibility: hidden;
+    }
+}
+
+#update {
+    position: relative;
+    float: right;
+    bottom: -10px;
+    padding-bottom: 20px;
+    right: 20px;
+}
