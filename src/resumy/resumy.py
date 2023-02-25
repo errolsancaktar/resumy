@@ -83,12 +83,12 @@ def create_resume(config: Yaml,
         optimize_size=('fonts'),
     )
     doc.metadata = metadata
-    if(args.buildWeb == False):
+    if(args.buildweb == False):
         logger.info(f'export to {output_file}')
         doc.write_pdf(output_file)
     
     # 5. Create SPA
-    if(args.buildWeb == True):
+    if(args.buildweb == True):
         web_dir = args.folder + "/" + args.web
         if os.path.exists(web_dir):
             shutil.rmtree(web_dir)
