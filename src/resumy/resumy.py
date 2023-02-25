@@ -345,7 +345,7 @@ def main() -> int:
         help='output folder name',
     )
     buildparser.add_argument(
-        '--buildweb', type=str, default=False,
+        '--buildweb', type=str, default=False, action='store_true',
         help='Output Web Page of Resume and pdf in web folder',
     )
     buildparser.add_argument(
