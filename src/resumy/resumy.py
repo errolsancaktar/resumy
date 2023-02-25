@@ -107,6 +107,7 @@ def create_resume(config: Yaml,
                 cssFile.write(infile.read())
         htmlFile = open(web_dir + "/index.html","w")
         htmlFile.write('<link rel="stylesheet" href="resume.css">')
+        htmlFile.write('<link rel="stylesheet" href="print.css">')
         htmlFile.write('')
         htmlFile.write(html_resume)
     
