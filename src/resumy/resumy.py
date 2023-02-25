@@ -56,7 +56,6 @@ def create_resume(config: Yaml,
                   metadata: DocumentMetadata,args: argparse.Namespace) -> None:
 
     # 1. Retrieve theme
-    print("Retrieve Theme")
     env = jinja2.Environment(
         loader=jinja2.FileSystemLoader('/'),
     )
@@ -66,11 +65,9 @@ def create_resume(config: Yaml,
         raise IOError(f"No such file or directory: '{err}'")
 
     # 2. Create a html from both the theme and the config file
-    print("2")
     html_resume = template.render(config, strptime=datetime.strptime)
 
     # 3. Add css automatically
-    print("3")
     css_list = []
     theme_lsdir = os.listdir(theme_path)
     for theme_file in theme_lsdir:
@@ -80,7 +77,6 @@ def create_resume(config: Yaml,
         css_list.append(os.path.join(theme_path, theme_file))
 
     # 4. Export a pdf
-    print("4")
     html = HTML(string=html_resume, media_type='print')
     doc = html.render(
         stylesheets=css_list,
@@ -91,7 +87,6 @@ def create_resume(config: Yaml,
     doc.write_pdf(output_file)
     
     # 5. Create SPA
-    print("5")
     web_dir = args.folder + "/" + args.web
     if os.path.exists(web_dir):
         shutil.rmtree(web_dir)
