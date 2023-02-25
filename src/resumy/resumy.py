@@ -83,28 +83,30 @@ def create_resume(config: Yaml,
         optimize_size=('fonts'),
     )
     doc.metadata = metadata
-    logger.info(f'export to {output_file}')
-    doc.write_pdf(output_file)
+    if(args.buildWeb == False):
+        logger.info(f'export to {output_file}')
+        doc.write_pdf(output_file)
     
     # 5. Create SPA
-    web_dir = args.folder + "/" + args.web
-    if os.path.exists(web_dir):
-        shutil.rmtree(web_dir)
-    os.mkdir(web_dir)
-    # copy fonts dir #
-    # fontsDir = os.listdir("resumy/src/resumy/themes/prairie/fonts")
-    shutil.copytree(theme_path + "/fonts",web_dir + "/fonts")
-    shutil.copy(output_file,web_dir + "/" + output_file)
-    # start building the css and html #
-    cssFile = open(web_dir + "/resume.css","w")
-    for css in css_list:
-        print(css)
-        with open(css) as infile:
-            cssFile.write(infile.read())
-    htmlFile = open(web_dir + "/resume.html","w")
-    htmlFile.write('<link rel="stylesheet" href="resume.css">')
-    htmlFile.write('')
-    htmlFile.write(html_resume)
+    if(args.buildWeb == True):
+        web_dir = args.folder + "/" + args.web
+        if os.path.exists(web_dir):
+            shutil.rmtree(web_dir)
+        os.mkdir(web_dir)
+        # copy fonts dir #
+        # fontsDir = os.listdir("resumy/src/resumy/themes/prairie/fonts")
+        shutil.copytree(theme_path + "/fonts",web_dir + "/fonts")
+        shutil.copy(output_file,web_dir + "/" + output_file)
+        # start building the css and html #
+        cssFile = open(web_dir + "/resume.css","w")
+        for css in css_list:
+            print(css)
+            with open(css) as infile:
+                cssFile.write(infile.read())
+        htmlFile = open(web_dir + "/resume.html","w")
+        htmlFile.write('<link rel="stylesheet" href="resume.css">')
+        htmlFile.write('')
+        htmlFile.write(html_resume)
     
 
 def normalize_args(args: argparse.Namespace, config: Yaml) -> argparse.Namespace:
@@ -341,6 +343,10 @@ def main() -> int:
     buildparser.add_argument(
         '-f', '--folder', type=str, default=DEFAULT_OUTPUT_FOLDER,
         help='output folder name',
+    )
+    buildparser.add_argument(
+        '--buildweb', type=str, default=False,
+        help='Output Web Page of Resume and pdf in web folder',
     )
     buildparser.add_argument(
         '-w', '--web', type=str, default=DEFAULT_WEB_OUTPUT_DIR,
