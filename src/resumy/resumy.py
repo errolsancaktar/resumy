@@ -13,6 +13,7 @@ from weasyprint import HTML  # type: ignore
 from weasyprint.document import DocumentMetadata  # type: ignore
 
 DATE_FORMAT = '%Y-%m-%d'
+DEFAULT_OUTPUT_FOLDER = './'
 DEFAULT_OUTPUT_FILENAME = 'out.pdf'
 DEFAULT_CONFIG_FILENAME = 'myconfig.yaml'
 DEFAULT_MYTHEME_NAME = 'mytheme'
@@ -21,6 +22,9 @@ DEFAULT_SCHEMA = 'jsonresume.yaml'
 DEFAULT_THEMES_DIR = 'themes'
 DEFAULT_THEME = 'prairie'
 DEFAULT_WEB_OUTPUT_DIR = 'output'
+cur_dir = os.path.dirname(os.path.abspath(__file__))
+print(cur_dir)
+
 
 # Type aliases
 Yaml = Dict[str, Any]
@@ -28,7 +32,6 @@ Yaml = Dict[str, Any]
 # Setup logger
 logger = logging.getLogger('resumy')
 logger.setLevel(logging.DEBUG)
-
 
 def load_yaml(config_path: str) -> Yaml:
     config = {}
@@ -39,7 +42,7 @@ def load_yaml(config_path: str) -> Yaml:
 
 def validate_config(config: Yaml, schema_file: str) -> None:
     if schema_file[0] != '/':
-        cur_dir = os.path.dirname(os.path.abspath(__file__))
+        # cur_dir = os.path.dirname(os.path.abspath(__file__))
         schema_path = os.path.abspath(os.path.join(cur_dir, DEFAULT_SCHEMAS_DIR, schema_file))
     else:
         schema_path = schema_file
@@ -50,8 +53,10 @@ def validate_config(config: Yaml, schema_file: str) -> None:
 def create_resume(config: Yaml,
                   output_file: str,
                   theme_path: str,
-                  metadata: DocumentMetadata) -> None:
+                  metadata: DocumentMetadata,args: argparse.Namespace) -> None:
+
     # 1. Retrieve theme
+    print("Retrieve Theme")
     env = jinja2.Environment(
         loader=jinja2.FileSystemLoader('/'),
     )
@@ -61,9 +66,11 @@ def create_resume(config: Yaml,
         raise IOError(f"No such file or directory: '{err}'")
 
     # 2. Create a html from both the theme and the config file
+    print("2")
     html_resume = template.render(config, strptime=datetime.strptime)
 
     # 3. Add css automatically
+    print("3")
     css_list = []
     theme_lsdir = os.listdir(theme_path)
     for theme_file in theme_lsdir:
@@ -73,6 +80,7 @@ def create_resume(config: Yaml,
         css_list.append(os.path.join(theme_path, theme_file))
 
     # 4. Export a pdf
+    print("4")
     html = HTML(string=html_resume, media_type='print')
     doc = html.render(
         stylesheets=css_list,
@@ -83,20 +91,22 @@ def create_resume(config: Yaml,
     doc.write_pdf(output_file)
     
     # 5. Create SPA
-    if os.path.exists(DEFAULT_WEB_OUTPUT_DIR):
-        shutil.rmtree(DEFAULT_WEB_OUTPUT_DIR)
-    os.mkdir(DEFAULT_WEB_OUTPUT_DIR)
+    print("5")
+    web_dir = args.folder + "/" + args.web
+    if os.path.exists(web_dir):
+        shutil.rmtree(web_dir)
+    os.mkdir(web_dir)
     # copy fonts dir #
-    fontsDir = os.listdir("themes/prairie/fonts")
-    shutil.copytree(theme_path + "/fonts",DEFAULT_WEB_OUTPUT_DIR + "/fonts")
-    shutil.copy(output_file,DEFAULT_WEB_OUTPUT_DIR + "/" + output_file)
+    # fontsDir = os.listdir("resumy/src/resumy/themes/prairie/fonts")
+    shutil.copytree(theme_path + "/fonts",web_dir + "/fonts")
+    shutil.copy(output_file,web_dir + "/" + output_file)
     # start building the css and html #
-    cssFile = open(DEFAULT_WEB_OUTPUT_DIR + "/resume.css","w")
+    cssFile = open(web_dir + "/resume.css","w")
     for css in css_list:
         print(css)
         with open(css) as infile:
             cssFile.write(infile.read())
-    htmlFile = open(DEFAULT_WEB_OUTPUT_DIR + "/resume.html","w")
+    htmlFile = open(web_dir + "/resume.html","w")
     htmlFile.write('<link rel="stylesheet" href="resume.css">')
     htmlFile.write('')
     htmlFile.write(html_resume)
@@ -237,8 +247,9 @@ def cmd_build(args: argparse.Namespace) -> int:
         config = from_resumy_to_jsonschema(config)
     theme_path = args.theme
     if args.theme[0] != '/':
-        cur_dir = os.path.dirname(os.path.abspath(__file__))
-        theme_path = os.path.abspath(os.path.join(cur_dir, DEFAULT_THEMES_DIR, args.theme))
+        # cur_dir = os.path.dirname(os.path.abspath(__file__))
+        theme_path = os.path.abspath(os.path.join(cur_dir,DEFAULT_THEMES_DIR, args.theme))
+        print("Theme " + theme_path)
 
     metadata = DocumentMetadata(
         title=args.title,
@@ -249,7 +260,7 @@ def cmd_build(args: argparse.Namespace) -> int:
     )
 
     try:
-        create_resume(config, args.output, theme_path, metadata)
+        create_resume(config, args.output, theme_path, metadata,args)
     except IOError as err:
         logger.error(err)
         return err.errno
@@ -331,6 +342,14 @@ def main() -> int:
     buildparser.add_argument(
         '-o', '--output', type=str, default=DEFAULT_OUTPUT_FILENAME,
         help='output file name',
+    )## Need to add output folder option to make it work with gitflow
+    buildparser.add_argument(
+        '-f', '--folder', type=str, default=DEFAULT_OUTPUT_FOLDER,
+        help='output folder name',
+    )
+    buildparser.add_argument(
+        '-w', '--web', type=str, default=DEFAULT_WEB_OUTPUT_DIR,
+        help='output web folder name',
     )
     buildparser.add_argument(
         '-t', '--theme', type=str, default=DEFAULT_THEME,
