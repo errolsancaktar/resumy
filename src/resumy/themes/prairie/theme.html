@@ -138,6 +138,9 @@
     </ul>
     {%- endif -%}
     {%- if references -%}
+    {%- if meta and meta.breaks_before.education -%}
+    <p style="break-before: always"></p>
+    {%- endif -%}
     <h2>References</h2>
     <ul class="work-list">
         {% for ref in references %}
