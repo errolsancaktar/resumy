@@ -129,7 +129,11 @@
         <li>
             <div class="work-subheader">
                 <div class="work-company">
+                    {%- if exp.url -%}
                     <b><a href="{{ exp.url }}">{{ exp.name }}</a></b>
+                    {%- else -%}
+                    <b>{{ exp.name }}</b>
+                    {%- endif -%}
                 </div>
                 <div class="work-date">{{ exp.date }}</div>
             </div>
