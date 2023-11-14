@@ -1,7 +1,7 @@
 <div id="noprint">
     {%- macro format_str_date(str_date) -%}
     {% if str_date|length < 5 %}
-        {{ strptime(str_date, '%Y').strftime('%b %Y') }}
+        {{ strptime(str_date, '%Y').strftime('%Y') }}
     {% else %}
         {{ strptime(str_date, '%Y-%m-%d').strftime('%b %Y') }}
     {% endif %}
@@ -13,8 +13,7 @@
     {%- endmacro -%}
 
     {%- macro format_edu_date_range(exp) -%}
-    {% if exp.startDate %}{{ exp.startDate }} - {% else %}{% endif %}{% if exp.endDate %}{{ exp.endDate }}{% else
-    %}Present{% endif %}
+    {% if exp.startDate %}{{ exp.startDate }} - {% else %}{% endif %}{% if exp.endDate == 'None' %}{% elseif exp.endDate %}{{ exp.endDate }}{% else %}Present{% endif %}
     {%- endmacro -%}
 
     <h1>{{ basics.name }}</h1>
