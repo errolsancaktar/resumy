@@ -13,7 +13,7 @@
     {%- endmacro -%}
 
     {%- macro format_edu_date_range(exp) -%}
-    {% if exp.startDate %}{{ exp.startDate }} - {% else %}{% endif %}{% if exp.endDate == 'None' %}{% elseif exp.endDate %}{{ exp.endDate }}{% else %}Present{% endif %}
+    {% if exp.startDate %}{{ exp.startDate }} - {% else %}{% endif %}{% if exp.endDate == 'None' %}{% elif exp.endDate %}{{ exp.endDate }}{% else %}Present{% endif %}
     {%- endmacro -%}
 
     <h1>{{ basics.name }}</h1>
