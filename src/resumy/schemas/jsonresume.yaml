@@ -169,7 +169,7 @@ properties:
         startDate:
           "$ref": "#/definitions/iso8601"
         endDate:
-          "$ref": "#/definitions/iso8601"
+          type: string
         score:
           type: string
           description: grade point average, e.g. 3.67/4.0
